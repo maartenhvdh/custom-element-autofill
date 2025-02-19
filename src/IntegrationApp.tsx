@@ -22,7 +22,6 @@ export const IntegrationApp = () => {
     deliveryClient
       .item(item.codename)
       .languageParameter(variant.codename)
-      .elementsParameter([...config.sourceElement])
       .toPromise()
       .then(response => {
         console.log('Response', response);
