@@ -25,6 +25,7 @@ export const IntegrationApp = () => {
       .elementsParameter([...config.targetElement])
       .toPromise()
       .then(response => {
+        console.log('Response', response);
         const elements = response.data.item.elements;
         const value = elements?.[config.targetElement]?.value; // Correct element access
         setElement(environmentId, variant.id, value, response.data.item.system.name, config);
