@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export type Config = Readonly<{
+  nameElement?: string;
   sourceElement: string;
   targetElement: string,
   previewApiKey: string;
@@ -8,6 +9,7 @@ export type Config = Readonly<{
 }>;
 
 export const configSchema: z.Schema<Config | null> = z.object({
+  nameElement: z.string().optional(),
   sourceElement: z.string(),
   targetElement: z.string(),
   previewApiKey: z.string(),

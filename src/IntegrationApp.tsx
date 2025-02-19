@@ -24,9 +24,12 @@ export const IntegrationApp = () => {
       .languageParameter(variant.codename)
       .elementsParameter([...config.targetElement])
       .toPromise()
-      .then(response => Object.entries(response.data.item.elements))
-      .then(elements => new Map(elements.map(([codename, value]) => [codename, setElement(environmentId, variant.id, value.value, config)]))),
-    4000);
+      .then(response => {
+        const elements = response.data.item.elements;
+        const value = elements?.[config.targetElement]?.value; // Correct element access
+        setElement(environmentId, variant.id, value, response.data.item.system.name, config);
+      })
+  , 4000);
 
   useEffect(() => {
     console.log('watchedElements', watchedElements);
@@ -46,7 +49,7 @@ export const IntegrationApp = () => {
 
 IntegrationApp.displayName = 'IntegrationApp';
 
-const setElement = (environmentId: string, languageId: string, elementValue: string | null, config: Config) => {
+const setElement = (environmentId: string, languageId: string, elementValue: string | null, itemName: string | null, config: Config) => {
   console.log('Setting element', elementValue);
   if (!elementValue) {
     return null;
@@ -66,6 +69,16 @@ const setElement = (environmentId: string, languageId: string, elementValue: str
           },
           value: elementValue
         }));
+
+  if (itemName) {
+    combinedElements.push(
+      builder.textElement({
+        element: {
+          codename: config.nameElement,
+        },
+        value: itemName
+      }));
+  }
 
   return managementClient
     .upsertLanguageVariant()
