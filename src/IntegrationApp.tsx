@@ -18,7 +18,7 @@ export const IntegrationApp = () => {
 
   const watchedElements = useElements([config.sourceElement]);
 
-  useDebouncedCallback(() =>
+  const updateElement = useDebouncedCallback(() =>
     deliveryClient
       .item(item.codename)
       .languageParameter(variant.codename)
@@ -32,8 +32,8 @@ export const IntegrationApp = () => {
     if (!watchedElements) {
       return;
     }
-
-  }, [watchedElements]);
+    updateElement();
+  }, [watchedElements, updateElement]);
 
   useDynamicHeight(null);
 
@@ -45,6 +45,7 @@ export const IntegrationApp = () => {
 IntegrationApp.displayName = 'IntegrationApp';
 
 const setElement = (environmentId: string, languageId: string, elementValue: string | null, config: Config) => {
+  console.log('Setting element', elementValue);
   if (!elementValue) {
     return null;
   }
@@ -74,6 +75,8 @@ const setElement = (environmentId: string, languageId: string, elementValue: str
       }
     })
     .toPromise();
+
+    return elementValue;
 };
 
 const useDynamicHeight = (renderedData: unknown) => {
