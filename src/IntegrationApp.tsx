@@ -28,7 +28,7 @@ export const IntegrationApp = () => {
         console.log('Response', config.sourceElement);
         const elements = response.data.item.elements;
         const value = elements?.[config.sourceElement]?.value; // Correct element access
-        setElement(environmentId, variant.id, value, response.data.item.system.name, config);
+        setElement(environmentId, variant.id, value, item.name, item.codename, config);
       })
   , 4000);
 
@@ -50,7 +50,7 @@ export const IntegrationApp = () => {
 
 IntegrationApp.displayName = 'IntegrationApp';
 
-const setElement = (environmentId: string, languageId: string, elementValue: string | null, itemName: string | null, config: Config) => {
+const setElement = (environmentId: string, languageId: string, elementValue: string | null, itemName: string | null, itemCodeName: string, config: Config) => {
   console.log('Setting element', elementValue);
   if (!elementValue) {
     return null;
@@ -83,7 +83,7 @@ const setElement = (environmentId: string, languageId: string, elementValue: str
 
   return managementClient
     .upsertLanguageVariant()
-    .byItemCodename(config.targetElement)
+    .byItemCodename(itemCodeName)
     .byLanguageId(languageId)
     .withData(() => {
       return {
