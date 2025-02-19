@@ -34,6 +34,7 @@ export const IntegrationApp = () => {
       return;
     }
     updateElement();
+    console.log('Element updated');
   }, [watchedElements, updateElement]);
 
   useDynamicHeight(null);
