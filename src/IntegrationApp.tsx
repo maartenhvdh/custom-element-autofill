@@ -22,12 +22,13 @@ export const IntegrationApp = () => {
     deliveryClient
       .item(item.codename)
       .languageParameter(variant.codename)
-      .elementsParameter([...config.targetElement])
+      .elementsParameter([...config.sourceElement])
       .toPromise()
       .then(response => {
         console.log('Response', response);
+        console.log('Response', config.sourceElement);
         const elements = response.data.item.elements;
-        const value = elements?.[config.targetElement]?.value; // Correct element access
+        const value = elements?.[config.sourceElement]?.value; // Correct element access
         setElement(environmentId, variant.id, value, response.data.item.system.name, config);
       })
   , 4000);
