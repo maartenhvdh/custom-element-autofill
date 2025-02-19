@@ -29,6 +29,7 @@ export const IntegrationApp = () => {
     4000);
 
   useEffect(() => {
+    console.log('watchedElements', watchedElements);
     if (!watchedElements) {
       return;
     }
