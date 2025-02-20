@@ -26,7 +26,8 @@ export const IntegrationApp = () => {
       .then(response => {
         const elements = response.data.item.elements;
         const value = elements?.[config.sourceElement]?.value; // Correct element access
-        setElement(environmentId, variant.id, value, item.name, item.codename, config);
+        const type = elements?.[config.sourceElement]?.type; // Correct element access
+        setElement(environmentId, variant.id, value, type, item.name, item.codename, config);
       })
   , 4000);
 
@@ -37,15 +38,8 @@ export const IntegrationApp = () => {
     updateElement();
   }, [watchedElements, updateElement]);
 
-
-  CustomElement.observeItemChanges(() => {
-    console.log('Item changed2');
-    updateElement();
-  });
-
   useEffect(() => {
     CustomElement.observeItemChanges(() => {
-      console.log('Item changed');
       updateElement();
     });
   }, [updateElement]);
@@ -59,34 +53,45 @@ export const IntegrationApp = () => {
 
 IntegrationApp.displayName = 'IntegrationApp';
 
-const setElement = (environmentId: string, languageId: string, elementValue: string | null, itemName: string | null, itemCodeName: string, config: Config) => {
-  if (!elementValue) {
-    return null;
-  }
-
+const setElement = (environmentId: string, languageId: string, elementValue: string | null, elementType: string | null, itemName: string | null, itemCodeName: string, config: Config) => {
+  const combinedElements: Array<LanguageVariantElements.ILanguageVariantElementBase> = [];
+  const builder = new LanguageVariantElementsBuilder();
   const managementClient = new ManagementClient({
     environmentId: environmentId,
     apiKey: config.managementApiKey,
-  });
+  });  
 
-  const combinedElements: Array<LanguageVariantElements.ILanguageVariantElementBase> = [];
-  const builder = new LanguageVariantElementsBuilder();
-      combinedElements.push(
-        builder.textElement({
-          element: {
-            codename: config.targetElement,
-          },
-          value: elementValue
-        }));
-
-  if (itemName) {
+  if (elementValue) {    
     combinedElements.push(
       builder.textElement({
         element: {
-          codename: config.nameElement,
+          codename: config.targetElement,
         },
-        value: itemName
+        value: elementValue
       }));
+  }
+
+  if (itemName) {
+    if (elementType === 'text') {
+      combinedElements.push(
+        builder.textElement({
+          element: {
+            codename: config.nameElement,
+          },
+          value: itemName
+        })
+      );
+    }
+    if (elementType === 'rich_text') {
+      combinedElements.push(
+        builder.richTextElement({
+          element: {
+            codename: config.nameElement,
+          },
+          value: itemName
+        })
+      );
+    }
   }
 
   return managementClient
