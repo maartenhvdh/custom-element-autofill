@@ -24,8 +24,6 @@ export const IntegrationApp = () => {
       .languageParameter(variant.codename)
       .toPromise()
       .then(response => {
-        console.log('Response', response);
-        console.log('Response', config.sourceElement);
         const elements = response.data.item.elements;
         const value = elements?.[config.sourceElement]?.value; // Correct element access
         setElement(environmentId, variant.id, value, item.name, item.codename, config);
@@ -33,15 +31,19 @@ export const IntegrationApp = () => {
   , 4000);
 
   useEffect(() => {
-    console.log('watchedElements', watchedElements);
     if (!watchedElements) {
       return;
     }
     updateElement();
-    console.log('Element updated');
   }, [watchedElements, updateElement]);
 
-  useDynamicHeight(null);
+  useEffect(() => {
+    CustomElement.observeItemChanges(() => {
+      updateElement();
+    });
+  }, [updateElement]);
+
+  CustomElement.setHeight(0);
 
   return (
     null
@@ -51,7 +53,6 @@ export const IntegrationApp = () => {
 IntegrationApp.displayName = 'IntegrationApp';
 
 const setElement = (environmentId: string, languageId: string, elementValue: string | null, itemName: string | null, itemCodeName: string, config: Config) => {
-  console.log('Setting element', elementValue);
   if (!elementValue) {
     return null;
   }
@@ -93,12 +94,4 @@ const setElement = (environmentId: string, languageId: string, elementValue: str
     .toPromise();
 
     return elementValue;
-};
-
-const useDynamicHeight = (renderedData: unknown) => {
-  useLayoutEffect(() => {
-    const newSize = Math.max(document.documentElement.offsetHeight, 100);
-
-    CustomElement.setHeight(Math.ceil(newSize));
-  }, [renderedData]); // recalculate the size when the rendered data changes
 };
