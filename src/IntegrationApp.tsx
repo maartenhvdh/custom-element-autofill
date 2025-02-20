@@ -27,7 +27,7 @@ export const IntegrationApp = () => {
         const elements = response.data.item.elements;
         const value = elements?.[config.sourceElement]?.value; // Correct element access
         const type = elements?.[config.sourceElement]?.type; // Correct element access
-        setElement(environmentId, variant.id, value, type, item.name, item.codename, config);
+        setElement(environmentId, variant.id, value, type ?? null, item.name, item.codename, config);
       })
   , 4000);
 
