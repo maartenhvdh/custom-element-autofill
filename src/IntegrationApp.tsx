@@ -37,8 +37,15 @@ export const IntegrationApp = () => {
     updateElement();
   }, [watchedElements, updateElement]);
 
+
+  CustomElement.observeItemChanges(() => {
+    console.log('Item changed2');
+    updateElement();
+  });
+
   useEffect(() => {
     CustomElement.observeItemChanges(() => {
+      console.log('Item changed');
       updateElement();
     });
   }, [updateElement]);
