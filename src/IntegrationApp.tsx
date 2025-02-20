@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useConfig, useItemInfo, useEnvironmentId, useVariantInfo } from './customElement/CustomElementContext';
 import { useElements } from './customElement/selectors';
 import { DeliveryClient } from '@kontent-ai/delivery-sdk';
@@ -92,6 +92,4 @@ const setElement = (environmentId: string, languageId: string, elementValue: str
       }
     })
     .toPromise();
-
-    return elementValue;
 };
